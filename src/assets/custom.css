@@ -1,0 +1,105 @@
+.input-id-name {
+    width: 300px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px solid gray;
+}
+.head-container {
+    padding: 15px 50px 0px 50px;
+}
+.main-container {
+    position: relative;
+    border: 1px solid gray;
+    height: 80vh;
+    padding: 15px;
+}
+.patients-list {
+    width: 100%;
+    max-height: 100%; 
+    overflow-y: scroll;
+}
+.avgrund-popup {
+    width: 600px;
+    height: 600px;
+    margin: -340px 0 0 -220px;
+}
+
+
+.table-container {
+    display: table;
+}
+.table-row {
+    display: table-row;
+}
+.table-cell {
+    display: table-cell;
+}
+
+.avgrund-popup {
+    padding: 30px;
+}
+.close-button {
+    position: absolute;
+    background: gray;
+    top: 15px;
+    right: 15px;
+    padding: 4px 10px;
+    margin: 0;
+}
+.dialog-buttons {
+    padding: 4px 12px;
+    font-size: 0.8em;
+    background: gray;
+}
+
+.orders-wrapper {
+    position: relative;
+    height: 500px;
+}
+.orders-list {
+    width: 100%;
+    max-height: 100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+}
+.order-details {
+    width: 100%;
+    height: 450px;
+    max-height: 100%;
+    overflow-y: scroll;
+}
+.orders-details-wrapper {
+    display: none;
+}
+.order-item-record {
+    display: flex;
+}
+.order-item-record span {
+    font-size: 0.7em;
+    margin-bottom: 3px;
+}
+.order-item-record span:first-child {
+    width: 40%;
+}
+
+.order-details p {
+    font-size: 0.7em;
+}
+.orders-wrapper h2 {
+    margin-bottom: 10px;
+}
+
+.product-img {
+    width: 100%;
+    height: auto;
+}
+.single-order {
+    width: 33%;
+    text-align: center;
+    cursor: pointer;
+}
+.order-caption {
+    font-size: 0.7em;
+}
