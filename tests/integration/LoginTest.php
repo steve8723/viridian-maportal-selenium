@@ -173,7 +173,9 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                     $moreButton->click();
                 }
             }
-            
+
+            $proceedButton = $this->byClassName("update");
+            // $proceedButton->click();
         }
 
         // -------------------------------------------
