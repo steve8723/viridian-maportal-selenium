@@ -99,12 +99,25 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                 $batch_orders = $line_item["BatchOrder"];
                 $count += count($batch_orders);
                 foreach ($batch_orders as $batch_order) {
+                    $batch_order["type"] = $line_item["type"];
+                    $batch_order["packageweight"] = $line_item["packageweight"];
                     array_push($barch_info, $batch_order);
                 }
             }
             var_dump($barch_info);
             foreach ($barch_info as $index=>$single_info) {
-                $this->select($this->byId('productType.id'.($index+1)))->selectOptionByValue(2);
+                $typeString = $single_info['type'];
+                $typeIndex = 2;
+                if ((int)$typeString > 14 && (int)$typeString < 18 ) $typeIndex = 5;
+                if ((int)$typeString == 18 && (int)$typeString == 19 && (int)$typeString == 24 ) $typeIndex = 6;
+                if ((int)$typeString == 22 && (int)$typeString == 23 ) $typeIndex = 3;
+                if ((int)$typeString == 20 && (int)$typeString == 21 && (int)$typeString == 25 ) $typeIndex = 4;
+
+                $this->select($this->byId('productType.id'.($index+1)))->selectOptionByValue($typeIndex);
+
+                $weightInput = $this->byId("grams".($index+1));
+                $weightInput->clear();
+                $this->keys($single_info['packageweight']);
 
                 $batchInput = $this->byId("batchNumber".($index+1));
                 $batchInput->clear();
