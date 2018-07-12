@@ -176,6 +176,12 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 
             $proceedButton = $this->byClassName("update");
             // $proceedButton->click();
+
+            $totalGrams = $this->byId("totalGrams");
+            $gramsRemaining = $this->byId("grams-remaining");
+            $isOverWeight = 0;
+            if ((float)$totalGrams->text() > (float)$gramsRemaining->text() ) $isOverWeight = 1;
+            
         }
 
         // -------------------------------------------
