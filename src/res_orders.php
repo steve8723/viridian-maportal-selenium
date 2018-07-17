@@ -1,5 +1,5 @@
 <?php
-    $data_string = "username=smartdev2017&password=smartdev2017";
+    $data_string = "username=michaellaw&password=Mayflower1";
     $old_url = 'https://mayflowersandbox.navigatorpos.com/api/v3';
     $new_url = 'https://nbs-dev.azurewebsites.net/api/v3';
     

@@ -199,6 +199,7 @@
       var jsonData2 = jsonData1;
       patients = jsonData1;
       displayPatients(patients.data);
+      console.log(patients.data);
       console.log( "Load was performed." );
     }, "json");
   };
@@ -223,15 +224,6 @@
   }
   function goDispense() {
     window.open("http://<?php echo $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']); ?>/goDispense.php", "_blank")
-  }
-  function goDispense11111() {
-    // if (activeOrder) {
-    //   $.post("http://<?php echo $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']); ?>/save_file.php", { order: activeOrder })
-    //     .done(function(){
-    //       console.log('Successfully saved to a file');
-    //       goDispense1();
-    //   });
-    // }
   }
 
 </script>
