@@ -89,10 +89,11 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                     $orders = curl_request($ch, $api_url.'/order'.'?customerID='.$eachCustomer["id"], null, $token);
                     $ordersInfo =json_decode($orders, true);
                     foreach ($ordersInfo["data"] as $eachOrder) {
-                        $eachOrder["medicalcardnumber"] =  $eachCustomer["medicalcardnumber"];
-                        $eachOrder["lastname"] =  $eachCustomer["lastname"];
+                        $orderToSave = $eachOrder;
+                        $orderToSave["medicalcardnumber"] =  $eachCustomer["medicalcardnumber"];
+                        $orderToSave["lastname"] =  $eachCustomer["lastname"];
+                        array_push($totalOrders, $orderToSave);
                     }
-                    $totalOrders = array_merge($totalOrders, $ordersInfo["data"]);
                 }
             } 
         }
