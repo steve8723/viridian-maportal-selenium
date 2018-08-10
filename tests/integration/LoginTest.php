@@ -88,6 +88,10 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                 if ($eachCustomer["ispatient"]) {
                     $orders = curl_request($ch, $api_url.'/order'.'?customerID='.$eachCustomer["id"], null, $token);
                     $ordersInfo =json_decode($orders, true);
+                    foreach ($ordersInfo["data"] as $eachOrder) {
+                        $eachOrder["medicalcardnumber"] =  $eachCustomer["medicalcardnumber"];
+                        $eachOrder["lastname"] =  $eachCustomer["lastname"];
+                    }
                     $totalOrders = array_merge($totalOrders, $ordersInfo["data"]);
                 }
             } 
@@ -172,7 +176,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 
             if (count($array_to_update) > 0) {
                 foreach ($array_to_update as $eachOrder) {
-                    $this->url($KAREN_DISPENSE_PAGE_URL);
+                    $this->url($DISPENSE_PAGE_URL."id=".$eachOrder["medicalcardnumber"]."&lastname=".$eachOrder["lastname"]);
                     $gramsRemaining = current($this->elements($this->using('css selector')->value('span#grams-remaining')));
                     if ($gramsRemaining) {
                         print "Remaining weight: ".$gramsRemaining->text();
