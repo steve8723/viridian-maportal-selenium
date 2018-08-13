@@ -123,7 +123,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
             }
         }
 
-        $sql = "SELECT * FROM order_status WHERE order_stats!='success'";
+        $sql = "SELECT * FROM order_status WHERE order_status!='success'";
         $result = $conn->query($sql);
         $array_on_db = [];
         $array_to_update = [];
