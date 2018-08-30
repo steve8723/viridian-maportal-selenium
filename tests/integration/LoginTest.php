@@ -112,7 +112,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
             die("Connection failed: " . mysqli_connect_error());
         }
         print "DB Connected successfully";
-
+        print $_SESSION['username'];
         
         foreach ($totalOrders as $single_record) {
             $insert_sql = "INSERT IGNORE INTO order_status (order_id, order_status) VALUES (".$single_record['id'].", 'waiting')";
@@ -149,8 +149,8 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 
         } catch (Exception $e) {
 
-            $username = $config['vg_username'];
-            $password = $config['vg_password'];
+            $username = $_SESSION['username'];
+            $password = $_SESSION['pass'];
 
             // Login process
             $this->url($config['ma_portal_login_page_url']);
@@ -166,14 +166,20 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
             $form = current($this->elements($this->using('css selector')->value('form#loginData')));
             $form->submit();
 
-            // -----Maximum allowed session reached!-----
-            $pMax = current($this->elements($this->using('css selector')->value('p#errorTxtAlignment')));
+            // -----Invalid error message !-----
+            $pErrorMessage = current($this->elements($this->using('css selector')->value('p#errorTxtAlignment')));
 
-            if ($pMax)
-            if ($pMax->text() == $MAXIMUM_SEESION_CONTEXT) {
-                $this->assertEquals($MAXIMUM_SEESION_CONTEXT, $pMax->text());
-                print '-----Maximum allowed session reached!-----';
+            if ($pErrorMessage) {
+                if ($pErrorMessage->text() == $MAXIMUM_SEESION_CONTEXT) {
+                    $this->assertEquals($MAXIMUM_SEESION_CONTEXT, $pErrorMessage->text());
+                    print $MAXIMUM_SEESION_CONTEXT;
+                } else if ($pErrorMessage->text() == $INVALID_CREDENTIALS) {
+                    $this->assertEquals($INVALID_CREDENTIALS, $pErrorMessage->text());
+                    print $INVALID_CREDENTIALS;
+                }
+                header('Location: login/index.php?msg='.$pErrorMessage->text());
             }
+            
 
             if (count($array_to_update) > 0) {
                 foreach ($array_to_update as $eachOrder) {

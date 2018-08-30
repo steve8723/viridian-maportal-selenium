@@ -18,5 +18,6 @@ $config['ma_portal_login_page_url'] = 'https://sso.hhs.state.ma.us/oam/server/ob
 
 $DISPENSE_PAGE_URL = 'https://hhsvgapps01.hhs.state.ma.us/mmj-rmd/dispense/dispensing?';
 $MAXIMUM_SEESION_CONTEXT = 'The user has already reached the maximum allowed number of sessions. Please close one of the existing sessions before trying to login again.';
+$INVALID_CREDENTIALS = 'Invalid User Name or Password. Please try again.';
 
 ?>
