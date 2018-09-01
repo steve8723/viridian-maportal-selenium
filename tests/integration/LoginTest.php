@@ -1,5 +1,4 @@
 <?php
-session_start();
 /**
  * Integration tests for login functionality
  */
