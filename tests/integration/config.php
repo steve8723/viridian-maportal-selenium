@@ -1,14 +1,9 @@
 <?php
-$config['viridian_user'] = 'smartdev2017';
-$config['viridian_password'] = 'smartdev2017';
 
 $config['servername'] = 'localhost';
 $config['db_username'] = 'root';
 $config['db_password'] = '';
 $config['dbname'] = 'orders';
-
-$config['vg_username'] = 'SCARLSON39';
-$config['vg_password'] = 'LicorneTech1!';
 
 $config['old_viridian_api_url']  = 'https://mayflowersandbox.navigatorpos.com/api/v3';
 $config['new_viridian_api_url'] =  'https://nbs-dev.azurewebsites.net/api/v3';

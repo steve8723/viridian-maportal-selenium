@@ -45,7 +45,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
         include_once('config.php');
         $this->timeouts()->implicitWait(2000);
 
-        $data_string = "username=".$config['viridian_user']."&password=".$config['viridian_password'];       
+        $data_string = "username=".$_SESSION['vg_username']."&password=".$_SESSION['vg_pass'];       
         $api_url =  $config['old_viridian_api_url'];
         
         $ch  = curl_init();
@@ -76,17 +76,14 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
             return $body;
         }
     
-        $auth = curl_request($ch, $api_url.'/token', $data_string, null);
-        $auth_obj = json_decode($auth);
-        $token = $auth_obj->token;
-        $customers = curl_request($ch, $api_url.'/customers', null, $token);
+        $customers = curl_request($ch, $api_url.'/customers', null, $_SESSION['viridian_token']);
     
         $customersInfo =json_decode($customers, true);
         $totalOrders = [];
         if ($customersInfo["data"]) {
             foreach ($customersInfo["data"] as $eachCustomer) {
                 if ($eachCustomer["ispatient"]) {
-                    $orders = curl_request($ch, $api_url.'/order'.'?customerID='.$eachCustomer["id"], null, $token);
+                    $orders = curl_request($ch, $api_url.'/order'.'?customerID='.$eachCustomer["id"], null, $_SESSION['viridian_token']);
                     $ordersInfo =json_decode($orders, true);
                     foreach ($ordersInfo["data"] as $eachOrder) {
                         $orderToSave = $eachOrder;
@@ -111,8 +108,6 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error());
         }
-        print "DB Connected successfully";
-        print $_SESSION['username'];
         
         foreach ($totalOrders as $single_record) {
             $insert_sql = "INSERT IGNORE INTO order_status (order_id, order_status) VALUES (".$single_record['id'].", 'waiting')";

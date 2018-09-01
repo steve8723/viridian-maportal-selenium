@@ -1,9 +1,8 @@
 <?php
-    $data_string = "username=smartdev2017&password=smartdev2017";
-    $old_url = 'https://mayflowersandbox.navigatorpos.com/api/v3';
-    $new_url = 'https://nbs-dev.azurewebsites.net/api/v3';
+    session_start();
+    include_once('../tests/integration/config.php');
     
-    $api_url =  $old_url;
+    $api_url =  $config['old_viridian_api_url'];
     
     $ch  = curl_init();
 
@@ -35,9 +34,6 @@
         return $body;
     }
 
-    $auth = curl_request($ch, $api_url.'/token', $data_string, null);
-    $auth_obj = json_decode($auth);
-    $token = $auth_obj->token;
-    $customers = curl_request($ch, $api_url.'/customers', null, $token);
+    $customers = curl_request($ch, $api_url.'/customers', null, $_SESSION['viridian_token']);
     echo json_encode($customers);
 ?>
