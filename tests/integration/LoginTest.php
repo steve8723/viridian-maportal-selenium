@@ -1,4 +1,5 @@
 <?php
+session_start();
 /**
  * Integration tests for login functionality
  */
@@ -177,7 +178,9 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                     $this->assertEquals($INVALID_CREDENTIALS, $pErrorMessage->text());
                     print $INVALID_CREDENTIALS;
                 }
-                header('Location: login/index.php?msg='.$pErrorMessage->text());
+                header('Location: login/vg_login.php?msg='.$pErrorMessage->text());
+            } else {
+                $_SESSION['vg_loggedin'] = true;
             }
             
 

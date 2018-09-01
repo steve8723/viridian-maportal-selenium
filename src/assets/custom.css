@@ -52,6 +52,11 @@
     font-size: 0.8em;
     background: gray;
 }
+.global-buttons {
+    padding: 4px 12px;
+    background: #2faeff;
+    color: white;
+}
 
 .orders-wrapper {
     position: relative;

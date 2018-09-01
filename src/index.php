@@ -1,8 +1,7 @@
 <?php
     session_start();
-    if (!$_SESSION['loggedin'])
-    header('Location: ./login/index.php');
-    else {
-        header('Location: goDispense.php');
-    }
+    if (!$_SESSION['viridian_loggedin'])
+        header('Location: ./login/viridian_login.php');
+    else 
+        header('Location: viridianOrders.php');
 ?>
