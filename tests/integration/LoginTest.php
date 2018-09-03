@@ -144,8 +144,8 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 
         } catch (Exception $e) {
 
-            $username = $_SESSION['username'];
-            $password = $_SESSION['pass'];
+            $username = $_SESSION['vg_username'];
+            $password = $_SESSION['vg_pass'];
 
             // Login process
             $this->url($config['ma_portal_login_page_url']);

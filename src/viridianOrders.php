@@ -1,3 +1,8 @@
+<?php
+    session_start();
+    if (!$_SESSION['viridian_loggedin'])
+        header('Location: ./login/viridian_login.php');
+?>
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
@@ -165,11 +170,20 @@
       orders = jsonData1;
       var htmlContent = '';
       orders.data.forEach((element, index) => {
-        htmlContent +='<div class="single-order" onClick="setOrderID('+element.id+', '+index+')">';
-        htmlContent +='<img src="assets/product-default.jpg" class="product-img" alt="product">';
-        
-        htmlContent +='<span class="order-caption">'+getFormattedDate(new Date(element.DateCreated))+' ('+element.LineItems.length+') '+'</span>';
-        htmlContent +='</div>';
+        $.ajax({
+          method: 'POST',
+          url: "getStatus.php",
+          data: { orderID: element.id }
+        }).done(function(msg) {
+          htmlContent +='<div class="single-order" onClick="setOrderID('+element.id+', '+index+')">';
+          htmlContent +='<img src="assets/product-default.jpg" class="product-img" alt="product">';
+          
+          htmlContent +='<span class="order-caption">'+getFormattedDate(new Date(element.DateCreated))+' ('+element.LineItems.length+') '+'</span>';
+          htmlContent +='<span class="order-status status-'+msg+'">: '+msg+'</span>';
+          htmlContent +='</div>';
+          $( ".orders-list" ).html(htmlContent);
+        });
+
       });
       $( ".orders-list" ).html(htmlContent);
       openDialog();
