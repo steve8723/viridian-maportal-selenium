@@ -108,3 +108,12 @@
 .order-caption {
     font-size: 0.7em;
 }
+.order-status {
+    font-size: 12px;
+}
+.status-success {
+    color: green;
+}
+.status-failed {
+    color: red;
+}
