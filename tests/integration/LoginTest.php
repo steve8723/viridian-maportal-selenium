@@ -180,7 +180,9 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 
             if (count($array_to_update) > 0) {
                 foreach ($array_to_update as $eachOrder) {
-                    $this->url($DISPENSE_PAGE_URL."id=".$eachOrder["medicalcardnumber"]."&lastname=".$eachOrder["lastname"]);
+                    // $this->url($DISPENSE_PAGE_URL."id=".$eachOrder["medicalcardnumber"]."&lastName=".$eachOrder["lastname"]);
+                    $this->url($DISPENSE_PAGE_URL."id=11038157&lastName=Veeder");
+
                     $gramsRemaining = current($this->elements($this->using('css selector')->value('span#grams-remaining')));
                     if ($gramsRemaining) {
                         print "Remaining weight: ".$gramsRemaining->text();
