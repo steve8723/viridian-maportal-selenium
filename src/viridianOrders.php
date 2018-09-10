@@ -180,7 +180,7 @@
             htmlContent +='<div class="single-order" onClick="setOrderID('+element.id+', '+index+')">';
             htmlContent +='<img src="assets/product-default.jpg" class="product-img" alt="product">';
             
-            htmlContent +='<span class="order-caption">'+getFormattedDate(new Date(element.DateCreated))+' ('+element.LineItems.length+') '+'</span>';
+            htmlContent +='<span class="order-caption">'+element.LineItems[0]['Name']+' ('+element.LineItems.length+' items) '+'</span>';
             htmlContent +='</div>';
             $( ".orders-list" ).html(htmlContent);
           }
