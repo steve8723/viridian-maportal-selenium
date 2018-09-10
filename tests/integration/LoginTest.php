@@ -45,11 +45,8 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
         include_once('config.php');
         $this->timeouts()->implicitWait(2000);
 
-        $data_string = "username=".$_SESSION['vg_username']."&password=".$_SESSION['vg_pass'];       
-        $api_url =  $config['old_viridian_api_url'];
-        
+        // -----CURL global function-----
         $ch  = curl_init();
-    
         function curl_request($ch, $url, $post_data, $token) {
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);        
@@ -75,27 +72,31 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
     
             return $body;
         }
-    
+        // -----------------------
+
+        // -----Fetch viridian resource-----
+        $api_url =  $config['old_viridian_api_url'];
         $customers = curl_request($ch, $api_url.'/customers', null, $_SESSION['viridian_token']);
-    
         $customersInfo =json_decode($customers, true);
         $totalOrders = [];
         if ($customersInfo["data"]) {
             foreach ($customersInfo["data"] as $eachCustomer) {
-                if ($eachCustomer["ispatient"]) {
+                if ($eachCustomer["ispatient"] && ($_SESSION['currentPatient'] == 0 ? true : $eachCustomer["id"] == $_SESSION['currentPatient'])) {
                     $orders = curl_request($ch, $api_url.'/order'.'?customerID='.$eachCustomer["id"], null, $_SESSION['viridian_token']);
                     $ordersInfo =json_decode($orders, true);
                     foreach ($ordersInfo["data"] as $eachOrder) {
                         $orderToSave = $eachOrder;
                         $orderToSave["medicalcardnumber"] =  $eachCustomer["medicalcardnumber"];
                         $orderToSave["lastname"] =  $eachCustomer["lastname"];
+                        $orderToSave["patient"] = $eachCustomer["id"];
                         array_push($totalOrders, $orderToSave);
                     }
                 }
             } 
         }
+        // -----------------------
 
-        // DB operation to insert new orders.
+        // DB credentials.
         $servername = $config['servername'] ;
         $username = $config['db_username'];
         $password = $config['db_password'];
@@ -108,17 +109,8 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error());
         }
-        
-        foreach ($totalOrders as $single_record) {
-            $insert_sql = "INSERT IGNORE INTO order_status (order_id, order_status) VALUES (".$single_record['id'].", 'waiting')";
-            if ($conn->query($insert_sql) === TRUE) {
-                print "New record created successfully";
-            } else {
-                print "Error: " . $insert_sql . "<br>" . $conn->error;
-            }
-        }
 
-        $sql = "SELECT * FROM order_status WHERE order_status!='success'";
+        $sql = "SELECT * FROM order_status WHERE order_status='success' and patient_id = '".$_SESSION['currentPatient']."'";
         $result = $conn->query($sql);
         $array_on_db = [];
         $array_to_update = [];
@@ -133,9 +125,16 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
         }
 
         foreach ($totalOrders as $single_record) {
-            if (!array_search($single_record['id'], $array_on_db)) array_push($array_to_update, $single_record);
+            if (array_search($single_record['id'], $array_on_db) > -1) continue;
+            else array_push($array_to_update, $single_record);
         }
+
+        $fp = fopen('results.json', 'w');
+        fwrite($fp, json_encode($array_on_db));
+        fclose($fp);
   
+        // --------------------------Start connection with Virtual Gateway----------------------------------------------
+
         try {
             // Check MA portal's session is still alive.
             $this->url($config['ma_portal_hhs_url']);
@@ -147,7 +146,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
             $username = $_SESSION['vg_username'];
             $password = $_SESSION['vg_pass'];
 
-            // Login process
+            // -----Login process-----
             $this->url($config['ma_portal_login_page_url']);
 
             $usernameInput = $this->byName("username");
@@ -160,6 +159,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 
             $form = current($this->elements($this->using('css selector')->value('form#loginData')));
             $form->submit();
+            // ---------------------------------
 
             // -----Invalid error message !-----
             $pErrorMessage = current($this->elements($this->using('css selector')->value('p#errorTxtAlignment')));
@@ -172,13 +172,11 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                     $this->assertEquals($INVALID_CREDENTIALS, $pErrorMessage->text());
                     print $INVALID_CREDENTIALS;
                 }
-                header('Location: login/vg_login.php?msg='.$pErrorMessage->text());
-            } else {
-                $_SESSION['vg_loggedin'] = true;
-            }
-            
+                //header('Location: login/vg_login.php?msg='.$pErrorMessage->text());
+            } 
+            // ---------------------------------
 
-            if (count($array_to_update) > 0) {
+            if (count($array_to_update) > 0 && $_SESSION['currentPatient'] != -1) {
                 foreach ($array_to_update as $eachOrder) {
                     // $this->url($DISPENSE_PAGE_URL."id=".$eachOrder["medicalcardnumber"]."&lastName=".$eachOrder["lastname"]);
                     $this->url($DISPENSE_PAGE_URL."id=11038157&lastName=Veeder");
@@ -245,10 +243,10 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                     //Submit the dispense form and update order status in DB.
                     if (!$isOverWeight) {
                         $proceedButton = $this->byClassName("update");
-                        $update_sql = "INSERT INTO order_status (order_id, order_status) VALUES ('".$eachOrder['id']."', 'success') ON DUPLICATE KEY UPDATE order_status='success'";
+                        $update_sql = "INSERT INTO order_status (order_id, order_status, patient_id) VALUES ('".$eachOrder['id']."', 'success', '".$eachOrder['patient']."') ON DUPLICATE KEY UPDATE order_status='success'";
                         // $proceedButton->click();
                     } else {
-                        $update_sql = "INSERT INTO order_status (order_id, order_status) VALUES ('".$eachOrder['id']."', 'failed') ON DUPLICATE KEY UPDATE order_status='failed'";
+                        $update_sql = "INSERT INTO order_status (order_id, order_status, patient_id) VALUES ('".$eachOrder['id']."', 'failed', '".$eachOrder['patient']."') ON DUPLICATE KEY UPDATE order_status='failed'";
                         print 'Overweight!';
                     }
     
@@ -258,6 +256,8 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
                         print "Error updating record: " . $conn->error;
                     }
                 }
+            } else {
+                print 'No record to be updated.';
             }
         }
 

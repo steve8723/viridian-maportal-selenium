@@ -1,11 +1,9 @@
 <?php
 	session_start();
-
 	if (isset($_REQUEST['username']) && isset($_REQUEST['pass'])) {
-		$_SESSION['vg_loggedin'] = false;
 		$_SESSION['vg_username'] =  $_REQUEST['username'];
 		$_SESSION['vg_pass'] =  $_REQUEST['pass'];
-		header('Location: ../goDispense.php');
+		header('Location: ../goDispense.php?patientID=-1');
 	}
 ?>
 <!DOCTYPE html>
@@ -54,12 +52,12 @@
 				</div>
 
 				<div class="wrap-input100 validate-input m-b-20" data-validate="Enter username or email">
-					<input class="input100" type="text" name="username" placeholder="username or email">
+					<input class="input100" type="text" name="username" placeholder="username or email" value="<?php echo isset($_SESSION['vg_username']) ? $_SESSION['vg_username'] : '' ?>">
 					<span class="focus-input100"></span>
 				</div>
 
 				<div class="wrap-input100 validate-input m-b-25" data-validate = "Enter password">
-					<input class="input100" type="password" name="pass" placeholder="password">
+					<input class="input100" type="password" name="pass" placeholder="password" value="<?php echo isset($_SESSION['vg_pass']) ? $_SESSION['vg_pass'] : '' ?>">
 					<span class="focus-input100"></span>
 				</div>
 

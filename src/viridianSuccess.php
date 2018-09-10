@@ -25,14 +25,12 @@
 <body>
   <div class="limiter">
     <div class="head-container">
-      <span>Select a patient to proceed: </span>
       <input 
         type="text"
         placeholder="Please input patient ID or patient name" 
         class="input-id-name" 
       />
-      <button class="global-buttons" onclick="window.open('login/vg_login.php')">Go to Dispense</button>&ensp;&ensp;
-      <a href="viridianSuccess.php">Go to successful order list</a>
+      <a href="viridianOrders.php">Go to pending order list</a>
     </div>
 		<div class="container-table100">
       <div class="wrap-table100">
@@ -45,7 +43,6 @@
 									<th class="cell100 column2">Email</th>
                   <th class="cell100 column3">Phone Number</th>
 									<th class="cell100 column4">ID</th>
-                  <th class="cell100 column5">Action</th>
 								</tr>
 							</thead>
 						</table>
@@ -176,7 +173,7 @@
           url: "getStatus.php",
           data: { orderID: element.id }
         }).done(function(msg) {
-          if (msg != 'success') {
+          if (msg == 'success') {
             htmlContent +='<div class="single-order" onClick="setOrderID('+element.id+', '+index+')">';
             htmlContent +='<img src="assets/product-default.jpg" class="product-img" alt="product">';
             
@@ -203,7 +200,6 @@
           htmlContent +='<td class="cell100 column2">'+element.email+'</td>';
           htmlContent +='<td class="cell100 column3">'+element.phone+'</td>';
           htmlContent +='<td class="cell100 column4">'+element.id+'</td>';
-          htmlContent +='<td class="cell100 column5"><a href="goDispense.php?patientID='+element.id+'" target="_blank">Go Dispense</a></td>';
 
           htmlContent +='</tr>';
         }

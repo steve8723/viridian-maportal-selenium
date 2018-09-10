@@ -2,7 +2,7 @@
     include_once('dbConnect.php');
     $orderID = $_REQUEST['orderID'];
 
-    $sql = "SELECT * FROM order_status WHERE order_id!=$orderID";
+    $sql = "SELECT * FROM order_status WHERE order_id=$orderID";
     $result = $conn->query($sql);
     $orderStatus = 'pending';
 
